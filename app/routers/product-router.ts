@@ -58,6 +58,26 @@ productRouter.get('/indica', async (req, res) => {
   }
 });
 
+productRouter.get('/edibles', async (req, res) => {
+  const products = await Product.find({ type: 'Edible' })
+  
+  if (products) {
+    res.send(products);
+  } else {
+    res.status(404).send({ msg: 'Edibles not found' })
+  }
+});
+
+productRouter.get('/rolls', async (req, res) => {
+  const products = await Product.find({ type: 'Joint' })
+
+  if (products) {
+    res.send(products);
+  } else {
+    res.status(404).send({ msg: 'Rolls not found' })
+  }
+});
+
 productRouter.get('/sativa', async (req, res) => {
   const products = await Product.find({dominant: 'Sativa'})
   if (products) {
