@@ -12,7 +12,6 @@ const getToken = (user: IUser) => {
 
 const isAuth =  (req: any, res: any, next: any) => {
   const token = req.headers.authorization;
-  console.log('req.headers > ', req.headers);
   
   if (token) {
     //Getting rid of "Bearer"

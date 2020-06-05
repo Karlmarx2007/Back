@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 
 import { productRouter } from './routers/product-router';
 import { userRouter } from './routers/user-router';
+import { paymentRouter } from './routers/payment-router';
+
 
 dotenv.config();
 const app = express();
@@ -24,7 +26,9 @@ app.use(bodyParser.json());
 
 app.use('/api/products', productRouter);
 
-app.use('/api/users', userRouter)
+app.use('/api/users', userRouter);
+
+app.use('/api/payments', paymentRouter);
 
 const port = process.env.PORT || 9080;
 app.listen(port, () => {

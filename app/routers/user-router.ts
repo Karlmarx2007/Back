@@ -1,51 +1,59 @@
 import { Router } from 'express';
 import User from '../models/user';
 import { getToken } from '../utils';
+import bcrypt from 'bcrypt';
 
 export const userRouter = Router();
 
 userRouter.post('/signin', async (req, res) => {
+  const { email, password } = req.body;
   const signInUser = await User.findOne({
-    email: req.body.email,
-    password: req.body.password
+    email
   });
 
-  if (signInUser) {
+  if (!signInUser) {
+    return res.status(404).send(`user with email ${email} not found`);
+  }
+
+  const match = await bcrypt.compare(password, signInUser.hash);
+  if (match) {
     res.send({
       ...signInUser,
       token: getToken(signInUser)
     })
-  } else {
+  }
+  else {
     res.status(401).send('invalid email or password');
   }
 });
 
 userRouter.post('/signup', async (req, res) => {
-  console.log('called @@');
-  console.log('req > ', req.body);
   const { name, email, password, repeatPassword } = req.body;
 
   if (!name) {
-    res.status(400).send('Please enter name');
+    return res.status(400).send('Please enter name');
   }
   if (!email) {
-    res.status(400).send('Please enter email');
+    return res.status(400).send('Please enter email');
   }
   if (!password) {
-    res.status(400).send('Please enter password');
+    return res.status(400).send('Please enter password');
   }
   if (!repeatPassword) {
-    res.status(400).send('Please re-enter Password');
+    return res.status(400).send('Please re-enter Password');
   }
   if (password !== repeatPassword) {
-    res.status(400).send('Passwords must match');
+    return res.status(400).send('Passwords don\'t match');
   }
   const existUser = await User.findOne({ email });
   
   if (existUser) {
-    res.status(403).send({error: `user with email ${email} already exists`});
+    return res.status(403).send({error: `user with email ${email} already exists`});
   }
-  const signUpUser = new User({ name, email, password, isAdmin: false });
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+  const signUpUser = new User({ name, email, hash, isAdmin: false });
   try {
     const newUser = await signUpUser.save();
     res.send({ ...newUser, token: getToken(newUser) });
@@ -55,11 +63,16 @@ userRouter.post('/signup', async (req, res) => {
 })
 
 userRouter.get('/createadmin', async (req, res) => {
+  const password = 'karlito';
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+  
   try {
     const user = new User({
       name: 'Karl',
       email: 'kmatuke@gmail.com',
-      password: 'karl7767',
+      hash,
       isAdmin: true,
     });
 
