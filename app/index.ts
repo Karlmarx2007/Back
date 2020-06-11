@@ -16,7 +16,7 @@ const dbPassword = process.env.MONGO_DB_PASSWORD;
 const database = process.env.MONGO_DB_DATABASE;
 const uri = process.env.MONGO_DB_URI;
 const connString = `mongodb+srv://${dbUser}:${dbPassword}@cluster0-mwra4.azure.mongodb.net/${database}?retryWrites=true&w=majority`
-
+const path = require('path');
 mongoose.connect(uri || connString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -25,7 +25,11 @@ mongoose.connect(uri || connString, {
 }).catch(error => console.log(error));
 
 // // Serve static files from the React frontend app
-// app.use(express.static(path.join(__dirname, 'front/build')));
+// app.use(express.static(path.join(__dirname, 'build')));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 app.use(bodyParser.json());
 
