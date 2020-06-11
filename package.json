@@ -27,7 +27,7 @@
         "dev": "nodemon --watch dist",
         "start": "node dist",
         "watch": "npm-watch",
-        "heroku-postbuild": "cd front && npm install && npm run build"
+        "heroku-postbuild": "npm install && npm run build"
     },
     "devDependencies": {
         "nodemon": "^2.0.2"

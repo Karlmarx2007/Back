@@ -24,8 +24,8 @@ mongoose.connect(connString, {
   useFindAndModify: false
 }).catch(error => console.log(error));
 
-// Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, 'front/build')));
+// // Serve static files from the React frontend app
+// app.use(express.static(path.join(__dirname, 'front/build')));
 
 app.use(bodyParser.json());
 
@@ -37,9 +37,9 @@ app.use('/api/payments', paymentRouter);
 
 app.use('/api/portfolio', portfolioRouter);
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/front/build/index.html'))
-})
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname + '/front/build/index.html'))
+// })
 
 const port = process.env.PORT || 9080;
 app.listen(port, () => {
