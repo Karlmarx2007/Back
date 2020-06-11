@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import path from 'path';
 
 import { productRouter } from './routers/product-router';
 import { userRouter } from './routers/user-router';
@@ -23,6 +24,9 @@ mongoose.connect(connString, {
   useFindAndModify: false
 }).catch(error => console.log(error));
 
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, 'front/build')));
+
 app.use(bodyParser.json());
 
 app.use('/api/products', productRouter);
@@ -32,6 +36,10 @@ app.use('/api/users', userRouter);
 app.use('/api/payments', paymentRouter);
 
 app.use('/api/portfolio', portfolioRouter);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/front/build/index.html'))
+})
 
 const port = process.env.PORT || 9080;
 app.listen(port, () => {
