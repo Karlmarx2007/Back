@@ -2,7 +2,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import path from 'path';
 
 import { productRouter } from './routers/product-router';
 import { userRouter } from './routers/user-router';
@@ -36,20 +35,6 @@ app.use('/api/users', userRouter);
 app.use('/api/payments', paymentRouter);
 
 app.use('/api/portfolio', portfolioRouter);
-
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname + '/front/build/index.html'))
-// })
-if (process.env.NODE_ENV === 'production') {
-  // Exprees will serve up production assets
-  app.use(express.static('front/build'));
-
-  // Express serve up index.html file if it doesn't recognize route
-  const path = require('path');
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'front', 'build', 'index.html'));
-  });
-}
 
 const port = process.env.PORT || 9080;
 app.listen(port, () => {
