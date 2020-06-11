@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import User from '../models/user';
-import { getToken } from '../utils';
+import { getToken, isAuth } from '../utils';
 import bcrypt from 'bcrypt';
 
 export const userRouter = Router();
@@ -60,6 +60,11 @@ userRouter.post('/signup', async (req, res) => {
   } catch (error) {
     res.status(401).send({error: error});
   }
+});
+
+userRouter.post('/logout',  (req, res) => {
+  console.log('req.body >> ', req.body);
+  
 })
 
 userRouter.get('/createadmin', async (req, res) => {
@@ -69,15 +74,15 @@ userRouter.get('/createadmin', async (req, res) => {
   const hash = await bcrypt.hash(password, salt);
   
   try {
-    const user = new User({
+    const adminUser = new User({
       name: 'Karl',
       email: 'kmatuke@gmail.com',
       hash,
       isAdmin: true,
     });
 
-    const newUser = await user.save();
-    res.send(newUser);
+    const newUser = await adminUser.save();
+    res.send({...newUser, token: getToken(newUser)});
   } catch (error) {
     res.send(error);
   }

@@ -1,33 +1,34 @@
 import { IUser } from './models/user';
 import jwt from 'jsonwebtoken';
 import config from './config';
-import { NextFunction } from 'express';
 
 const getToken = (user: IUser) => {
   const secret = config.JWT_SECRET;
   return jwt.sign(user.toJSON(), secret, {
-    expiresIn: '48h'
-  })
+    expiresIn: '1h'
+  });
 };
 
-const isAuth =  (req: any, res: any, next: any) => {
+const isAuth = (req: any, res: any, next: any) => {
   const token = req.headers.authorization;
+
+  if (!token) return res.status(401).json({ msg: 'token is not supplied' });
   
-  if (token) {
-    //Getting rid of "Bearer"
-    const onlyToken = token.slice(6, token.length);
+  //Getting rid of "Bearer"
+  const onlyToken = token.slice(6, token.length);
+
+  jwt.verify(onlyToken, config.JWT_SECRET, (err: any, decoded: any) => {
+    if (err) {
+      return res.status(401).json({ msg: err.message });
+    }
+    req.user = decoded;
     
-    jwt.verify(onlyToken, config.JWT_SECRET, (err: any, decode: any) => {
-      if (err) {
-        return res.status(401).send({ msg: 'invalid token', err });
-      }
-      req.user = decode;
-      next();
-      return;
-    });
-  } else {
-    return res.status(401).send({ msg: 'token is not supplied' });
-  }
+    /*
+    Called if the current middleware function does not end the request-response cycle
+    to pass control to the next middleware function, else the request will be left hanging.
+    */
+    return next();
+  });
   
 };
 

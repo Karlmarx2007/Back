@@ -2,6 +2,7 @@ import { Router } from 'express';
 import config from '../config';
 import { v4 as uuidv4 } from 'uuid';
 import { IProduct } from '../models/product';
+import { isAuth } from '../utils';
 
 export const paymentRouter = Router();
 
@@ -12,7 +13,7 @@ const calculateTotal = (products: IProduct[]): number => {
 }
 
 
-paymentRouter.post('/payment', async (req, res) => {
+paymentRouter.post('/payment', isAuth, async (req, res) => {
   const { products, token } = req.body;
   products.forEach((p: IProduct) => console.log(p.price));
   const idempotencyKey = uuidv4();
