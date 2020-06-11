@@ -14,9 +14,10 @@ const app = express();
 const dbUser = process.env.MONGO_DB_USER;
 const dbPassword = process.env.MONGO_DB_PASSWORD;
 const database = process.env.MONGO_DB_DATABASE;
+const uri = process.env.MONGO_DB_URI;
 const connString = `mongodb+srv://${dbUser}:${dbPassword}@cluster0-mwra4.azure.mongodb.net/${database}?retryWrites=true&w=majority`
 
-mongoose.connect(connString, {
+mongoose.connect(uri || connString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
