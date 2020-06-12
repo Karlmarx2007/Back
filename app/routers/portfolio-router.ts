@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import nodemailer from 'nodemailer';
-import config from '../config'
 
 export const portfolioRouter = Router();
 
@@ -10,7 +9,7 @@ portfolioRouter.post('/send-email', async (req, res) => {
     service: 'gmail',
     auth: {
       user: 'kmatuke@gmail.com',
-      pass: config.GMAIL_PASS,
+      pass: 'qpobaujkmvfktoom',
     },
     tls: {
       rejectUnauthorized: false
