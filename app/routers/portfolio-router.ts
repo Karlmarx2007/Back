@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import nodemailer from 'nodemailer';
+import config from '../config'
 
 export const portfolioRouter = Router();
 
@@ -9,7 +10,7 @@ portfolioRouter.post('/send-email', async (req, res) => {
     service: 'gmail',
     auth: {
       user: 'kmatuke@gmail.com',
-      pass: 'qpobaujkmvfktoom',
+      pass: config.GMAIL_PASS,
     },
     tls: {
       rejectUnauthorized: false
@@ -20,13 +21,11 @@ portfolioRouter.post('/send-email', async (req, res) => {
     const mail = await transport.sendMail({
       from: emailData.email,
       to: 'kmatuke@gmail.com',
-      subject: emailData.subject,
-      text: emailData.message
+      subject: `New message from Portfolio, Subject: ${emailData.subject}`,
+      text: `Email: ${emailData.email}, Name: ${emailData.name}, Phone: ${emailData.phoneNumber}, says: ${emailData.message}`
     });
     res.status(200).send({ msg: mail })
   } catch (error) {
     return res.status(500).send({ msg: error.message });
   }
-
-  
 })
