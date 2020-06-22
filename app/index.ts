@@ -7,6 +7,7 @@ import { productRouter } from './routers/product-router';
 import { userRouter } from './routers/user-router';
 import { paymentRouter } from './routers/payment-router';
 import { portfolioRouter } from './routers/portfolio-router';
+import { orderRouter } from './routers/order-router';
 
 
 dotenv.config();
@@ -24,8 +25,6 @@ mongoose.connect(uri || connString, {
   useFindAndModify: false
 }).catch(error => console.log(error));
 
-// // Serve static files from the React frontend app
-// app.use(express.static(path.join(__dirname, 'build')));
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
@@ -47,6 +46,8 @@ app.use('/api/users', userRouter);
 app.use('/api/payments', paymentRouter);
 
 app.use('/api/portfolio', portfolioRouter);
+
+app.use('/api/orders', orderRouter);
 
 const port = process.env.PORT || 9080;
 app.listen(port, () => {

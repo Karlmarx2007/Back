@@ -5,7 +5,7 @@ import config from './config';
 const getToken = (user: IUser) => {
   const secret = config.JWT_SECRET;
   return jwt.sign(user.toJSON(), secret, {
-    expiresIn: '1h'
+    expiresIn: '4h'
   });
 };
 
